@@ -1,0 +1,43 @@
+diff --git a/src/managers/VersionKeeperManager.cpp b/src/managers/VersionKeeperManager.cpp
+index cc03a7b9..54824c32 100644
+--- a/src/managers/VersionKeeperManager.cpp
++++ b/src/managers/VersionKeeperManager.cpp
+@@ -23,19 +23,29 @@ CVersionKeeperManager::CVersionKeeperManager() {
+ 
+     const auto  DATAROOT = NFsUtils::getDataHome();
+ 
++    Debug::log(LOG, "CVersionKeeperManager: 1");
++
+     if (!DATAROOT)
+         return;
+ 
++    Debug::log(LOG, "CVersionKeeperManager: 2");
++
+     const auto LASTVER = NFsUtils::readFileAsString(*DATAROOT + "/" + VERSION_FILE_NAME);
+ 
++    Debug::log(LOG, "CVersionKeeperManager: 3: {}", LASTVER.value_or("empty"));
++
+     if (!LASTVER)
+         return;
+ 
++    Debug::log(LOG, "CVersionKeeperManager: 4");
++
+     if (!isVersionOlderThanRunning(*LASTVER)) {
+         Debug::log(LOG, "CVersionKeeperManager: Read version {} matches or is older than running.", *LASTVER);
+         return;
+     }
+ 
++    Debug::log(LOG, "CVersionKeeperManager: 5");
++
+     NFsUtils::writeToFile(*DATAROOT + "/" + VERSION_FILE_NAME, HYPRLAND_VERSION);
+ 
+     if (*PNONOTIFY) {
+@@ -50,6 +60,8 @@ CVersionKeeperManager::CVersionKeeperManager() {
+ 
+     m_bFired = true;
+ 
++    Debug::log(LOG, "CVersionKeeperManager: 6");
++
+     g_pEventLoopManager->doLater([]() {
+         CProcess proc("hyprland-update-screen", {"--new-version", HYPRLAND_VERSION});
+         proc.runAsync();
